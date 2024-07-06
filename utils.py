@@ -7,7 +7,14 @@ import google.generativeai as genai
 import re
 from datetime import datetime
 
-
+def fetch_news_data(query, api_key):
+    """
+    Fetch news data from News API.
+    """
+    url = f"https://newsapi.org/v2/everything?q={query}&apiKey={api_key}"
+    response = requests.get(url)
+    return response.json()
+    
 def check_image_quake(url="https://github.com/louis70109/ideas-tree/blob/master/images/%E5%8F%B0%E5%8C%97_%E5%A4%A7%E7%9B%B4%E7%BE%8E%E5%A0%A4%E6%A5%B5%E9%99%90%E5%85%AC%E5%9C%92/default.png"):
     genai.configure(api_key=os.getenv('GEMINI_API_KEY'))
 
