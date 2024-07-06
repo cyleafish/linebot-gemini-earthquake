@@ -53,7 +53,7 @@ parser = WebhookParser(channel_secret)
 
 import google.generativeai as genai
 from firebase import firebase
-from utils import check_image_quake, check_location_in_message, get_current_weather, get_weather_data, simplify_data, fetch_news_data
+from utils import check_image_quake, check_location_in_message, get_current_weather, get_weather_data, simplify_data
 
 
 firebase_url = os.getenv('FIREBASE_URL')
@@ -112,7 +112,7 @@ async def handle_callback(request: Request):
                 "摘要": 'B',
                 "地震": 'C',
                 "氣候": 'D',
-                "新聞": 'E'
+                "其他": 'E'
             }
 
             model = genai.GenerativeModel('gemini-1.5-pro')
@@ -158,16 +158,6 @@ async def handle_callback(request: Request):
                 response = model.generate_content(
                     f'你現在身處在台灣，相關資訊 {total_info}，我朋友說了「{text}」，請問是否有誇張、假裝的嫌疑？ 回答是或否。')
                 reply_msg = response.text
-                
-            elif text_condition == 'E':
-                news_response = fetch_news_data("性別歧視", news_api_key)
-                if news_response and news_response.get("status") == "ok":
-                    articles = news_response.get("articles", [])
-                    if articles:
-                        top_article = articles[0]
-                        reply_msg = f"最新新聞：\n\n標題: {top_article['title']}\n描述: {top_article['description']}\n\n更多詳情: {top_article['url']}"
-                    reply_msg = '目前沒有相關新聞。'
-                
             else:
                 # model = genai.GenerativeModel('gemini-pro')
                 messages.append({'role': 'user', 'parts': [text]})
